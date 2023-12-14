@@ -4,7 +4,8 @@ LIB			=	libft.a
 
 SRC			=	src/main.c				\
 				src/errors_mgmt.c		\
-				src/parsing.c
+				src/parsing.c			\
+				src/utils.c
 
 OBJ			=	$(SRC:.c=.o)
 
@@ -20,7 +21,7 @@ $(NAME)		:	$(OBJ)
 				$(CC) $(OBJ) -o $(NAME) $(LIB)
 
 %.o			:	%.c
-				$(CC) $(CFLG) -c $< -o $@
+				$(CC) $(CFLG) -c $< -o $@ -g3
 
 .PHONY		:	all re fclean clean libclean libfclean
 
