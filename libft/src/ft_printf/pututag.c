@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pututag.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
+/*   By: alexandre <alexandre@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 05:05:58 by aautin            #+#    #+#             */
-/*   Updated: 2023/11/27 16:41:07 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/17 00:22:36 by alexandre        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	ft_nb_size(unsigned int n)
 {
 	int		i;
 	int		temp;
-
+ù
 	i = 1;
 	temp = n / 10;
 	while (temp)
@@ -24,8 +24,6 @@ static int	ft_nb_size(unsigned int n)
 		temp = temp / 10;
 		i++;
 	}
-	if (n < 0)
-		i++;
 	return (i);
 }
 
@@ -33,26 +31,17 @@ static char	*ft_utoa(unsigned int n)
 {
 	char	*array;
 	int		i;
-	int		sign;
 
 	i = ft_nb_size(n);
 	array = (char *)malloc((i + 1) * sizeof(char));
 	if (!array)
 		return (NULL);
-	sign = 0;
-	if (n < 0)
-	{
-		sign = -1;
-		n *= -1;
-	}
 	array[i] = '\0';
 	while (i--)
 	{
 		array[i] = (n % 10) + 48;
 		n = n / 10;
 	}
-	if (sign == -1)
-		array[0] = '-';
 	return (array);
 }
 
