@@ -14,26 +14,16 @@
 
 static void	child_process(char **argv)
 {
-	char	*str;
-	char	*temp;
-	int		file_fd;
+	char	*file_content;
 
-	file_fd = open(argv[1], O_RDONLY);
-	temp = get_next_line(file_fd);
-	str = NULL;
-	while (temp)
+	file_content = get_file_content(argv[1]);
+	if (!file_content)
 	{
-		if (str)
-			str = ft_strjoin(str, temp, 2);
-		else
-		{
-			str = ft_strdup(temp);
-			free(temp);
-		}
-		temp = get_next_line(file_fd);
+		perror(file_content);
+		return ;
 	}
-	ft_printf("in.fl's content:\n%s", str);
-	frees(1, 's', str);
+	ft_printf("%s", file_content);
+	free(file_content);
 }
 
 int	main(int argc, char **argv,  char **env)
