@@ -24,15 +24,10 @@
 // utils.c
 void		free_tab(char **tab);
 
-// errors_mgmt.c
-int			files_check(char *filename1, char *filename2);
-char		**args_check(int ac, char *av[], char *env[]);
-
 // parsing.c
-char		*get_cmdname_nooption(char *cmdname);
 char		**get_paths_tab(char *env[]);
 
 // main.c
-int			main(int argc, char *argv[], char *env[]);
+int			main(int argc, char **argv,  char **env);
 
 #endif

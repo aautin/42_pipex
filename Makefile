@@ -3,7 +3,6 @@ NAME		=	pipex
 LIB			=	libft.a
 
 SRC			=	src/main.c				\
-				src/errors_mgmt.c		\
 				src/parsing.c			\
 				src/utils.c
 

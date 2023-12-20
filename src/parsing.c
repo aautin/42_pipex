@@ -15,21 +15,12 @@
 static int	get_paths_line(char *env[])
 {
 	int	i;
-	int found;
-	int	line_len;
 
 	i = 0;
-	found = 0;
 	while (env[i])
 	{
-		line_len = ft_strlen(env[i]);
-		if (ft_strnstr(env[i], "PATH", line_len))
-		{
-			if (found)
-				return (i);
-			else
-				found = 1;
-		}
+		if (ft_strnstr(env[i], "PATH", 4))
+			return (i);
 		i++;
 	}
 	return (-1);

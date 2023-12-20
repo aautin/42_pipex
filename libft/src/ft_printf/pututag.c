@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pututag.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexandre <alexandre@student.42.fr>        +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 05:05:58 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/17 00:22:36 by alexandre        ###   ########.fr       */
+/*   Updated: 2023/11/27 16:41:07 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	ft_nb_size(unsigned int n)
 {
 	int		i;
 	int		temp;
-ù
+
 	i = 1;
 	temp = n / 10;
 	while (temp)

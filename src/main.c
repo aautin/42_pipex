@@ -12,17 +12,51 @@
 
 #include "../includes/pipex.h"
 
-int	main(int argc, char *argv[], char *env[])
+static void	child_process(char **argv, int *fd)
 {
-	char	**paths_tab;
-	// char	*cmds_paths[2];
+	char	*str;
+	char	*temp;
+	int		fd;
 
-	paths_tab = args_check(argc, argv, env);
-	if (paths_tab == NULL)
-		return (1);
+	fd = open(argv[1], O_RDONLY);
+	temp = get_next_line(fd);
+	while (temp)
+	{
+		str = ft_strjoin(str, temp, 2);
+		temp = get_next_line(fd);
+	}
+	ft_printf("in.fl's content:\n%s", str);
+}
+
+int	main(int argc, char **argv,  char **env)
+{
+	int		fd[2];
+	int		pid;
+
+	if (argc == 5)
+	{
+		if (pipe(fd) == -1)
+		{
+			perror("Error:");
+			return (1);
+		}
+		pid = fork();
+		if (pid == 0)
+		{
+			child_process(fd);
+			ft_printf("PID = %d || Parent PID = %d\n", getpid(), getppid());
+		}
+		else
+		{
+			waitpid(pid, NULL, 0);
+			// parent_process(fd);
+			ft_printf("PID = %d || Parent PID = %d\n", getpid(), getppid());
+		}
+		return (0);
+	}
 	else
 	{
-		// pipex();
-		return (0);
+		ft_printf("Wrong number of arguments.\n");
+		return (1);
 	}
 }
