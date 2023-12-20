@@ -20,12 +20,20 @@ static void	child_process(char **argv)
 
 	file_fd = open(argv[1], O_RDONLY);
 	temp = get_next_line(file_fd);
+	str = NULL;
 	while (temp)
 	{
-		str = ft_strjoin(str, temp, 2);
+		if (str)
+			str = ft_strjoin(str, temp, 2);
+		else
+		{
+			str = ft_strdup(temp);
+			free(temp);
+		}
 		temp = get_next_line(file_fd);
 	}
 	ft_printf("in.fl's content:\n%s", str);
+	frees(1, 's', str);
 }
 
 int	main(int argc, char **argv,  char **env)

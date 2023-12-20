@@ -17,13 +17,11 @@
 # include "../libft/includes/libft.h"
 # include "../libft/src/gnl/get_next_line.h"
 # include <stdio.h>
-# include <string.h>
-# include <unistd.h>
 # include <sys/wait.h>
 # include <errno.h>
 
 // utils.c
-void		free_tab(char **tab);
+
 
 // parsing.c
 char		**get_paths_tab(char *env[]);
