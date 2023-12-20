@@ -12,24 +12,25 @@
 
 #include "../includes/pipex.h"
 
-static void	child_process(char **argv, int *fd)
+static void	child_process(char **argv)
 {
 	char	*str;
 	char	*temp;
-	int		fd;
+	int		file_fd;
 
-	fd = open(argv[1], O_RDONLY);
-	temp = get_next_line(fd);
+	file_fd = open(argv[1], O_RDONLY);
+	temp = get_next_line(file_fd);
 	while (temp)
 	{
 		str = ft_strjoin(str, temp, 2);
-		temp = get_next_line(fd);
+		temp = get_next_line(file_fd);
 	}
 	ft_printf("in.fl's content:\n%s", str);
 }
 
 int	main(int argc, char **argv,  char **env)
 {
+	(void) env;
 	int		fd[2];
 	int		pid;
 
@@ -43,7 +44,7 @@ int	main(int argc, char **argv,  char **env)
 		pid = fork();
 		if (pid == 0)
 		{
-			child_process(fd);
+			child_process(argv);
 			ft_printf("PID = %d || Parent PID = %d\n", getpid(), getppid());
 		}
 		else

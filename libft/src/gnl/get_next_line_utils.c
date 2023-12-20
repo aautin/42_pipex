@@ -49,7 +49,7 @@ char	*ft_freenullreturn(char *s1, char *s2)
 	return (NULL);
 }
 
-char	*ft_strjoin(char *s1, char *s2, char freed)
+char	*ft_strjoin2(char *s1, char *s2, char freed)
 {
 	char	*str;
 	int		i;
