@@ -29,7 +29,7 @@ static void	parent_process(int *fd, char **argv, char **env)
 	int		outfile_fd;
 
 	close(fd[1]);
-	outfile_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	outfile_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile_fd == -1)
 	{
 		perror(NULL);
@@ -45,6 +45,7 @@ static void	parent_process(int *fd, char **argv, char **env)
 	dup2(outfile_fd, STDOUT_FILENO);
 	execute(cmd_w_options, env);
 	free_stab(cmd_w_options);
+	close(outfile_fd);
 }
 
 static void	child_process(char **argv, int *fd)
