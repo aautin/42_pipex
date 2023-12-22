@@ -12,33 +12,6 @@
 
 #include "../includes/pipex.h"
 
-static char *get_cmd_path(char *cmd, char **env)
-{
-	char	*cmd_path;
-	char	**paths;
-	int		i;
-
-	i = 0;
-	while (ft_strnstr(env[i], "PATH", 4) == 0)
-		i++;
-	paths = ft_split(env[i], ':');
-	if (paths == NULL)
-		return (NULL);
-	i = -1;
-	while (paths[++i])
-	{
-		paths[i] = ft_strjoin(paths[i], "/", 1);
-		if (paths[i] == NULL)
-		{
-			frees(2, 'S', paths, 'S', paths + (++i)); // free dbtab from first
-			return (NULL);	// to the crash one, & from the next to the last
-		}
-	}
-	// parsed every possible paths, have to take the right one and return it
-	free_stab(paths);
-	return (cmd_path);
-}
-
 static void	execute(char **cmd_w_options, char **env)
 {
 	char	*cmd_path;
@@ -46,7 +19,8 @@ static void	execute(char **cmd_w_options, char **env)
 	cmd_path = get_cmd_path(cmd_w_options[0], env);
 	if (cmd_path == NULL)
 		return ;
-	
+	execve(cmd_path, cmd_w_options, NULL);
+	free(cmd_path);
 }
 
 static void	parent_process(int *fd, char **argv, char **env)

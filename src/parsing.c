@@ -12,37 +12,56 @@
 
 #include "../includes/pipex.h"
 
-static int	get_paths_line(char *env[])
+char	**get_env_paths(char **env)
 {
-	int	i;
-
-	i = 0;
-	while (env[i])
-	{
-		if (ft_strnstr(env[i], "PATH", 4))
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-char	**get_paths_tab(char *env[])
-{
-	char	**tab;
-	int		paths_line;
+	char	**paths;
 	int		i;
 
-	paths_line = get_paths_line(env);
-	if (paths_line == -1)
+	i = 0;
+	while (ft_strnstr(env[i], "PATH", 4) == 0)
+		i++;
+	paths = ft_split(env[i], ':');
+	if (paths == NULL)
+	{
+		perror(NULL);
 		return (NULL);
-	tab = ft_split(env[paths_line], ':');
-	if (tab == NULL)
+	}
+	i = -1;
+	while (paths[++i])
+	{
+		paths[i] = ft_strjoin(paths[i], "/", 1);
+		if (paths[i] == NULL)
+		{
+			frees(2, 'S', paths, 'S', paths + (++i)); // free dbtab from first
+			perror(NULL);
+			return (NULL);	// to the crash one, & from the next to the last
+		}
+	}
+	return (paths);
+}
+
+char	*get_cmd_path(char *cmd_no_option, char **env)
+{
+	char	**env_paths;
+	char	*temp;
+	int		i;
+
+	env_paths = get_env_paths(env);
+	if (env_paths == NULL)
 		return (NULL);
 	i = 0;
-	while (tab[i])
+	while (env_paths[i])
 	{
-		tab[i] = ft_strjoin(tab[i], "/", 1);
+		temp = ft_strjoin(env_paths[i], cmd_no_option, 0);
+		if (access(temp, X_OK) != -1)
+		{
+			free_stab(env_paths);
+			return (temp);
+		}
+		free(temp);
 		i++;
 	}
-	return (tab);
+	perror(cmd_no_option);
+	free_stab(env_paths);
+	return (NULL);
 }

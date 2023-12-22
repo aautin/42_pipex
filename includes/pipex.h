@@ -24,9 +24,10 @@
 
 
 // parsing.c
-char		**get_paths_tab(char *env[]);
+char	**get_env_paths(char **env);
+char	*get_cmd_path(char *cmd_no_option, char **env);
 
 // main.c
-int			main(int argc, char **argv,  char **env);
+int		main(int argc, char **argv,  char **env);
 
 #endif
