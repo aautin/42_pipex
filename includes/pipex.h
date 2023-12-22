@@ -20,9 +20,6 @@
 # include <sys/wait.h>
 # include <errno.h>
 
-// utils.c
-
-
 // parsing.c
 char	**get_env_paths(char **env);
 char	*get_cmd_path(char *cmd_no_option, char **env);
