@@ -61,7 +61,7 @@ char	*get_cmd_path(char *cmd_no_option, char **env)
 		free(temp);
 		i++;
 	}
-	perror(cmd_no_option);
+	ft_printf("command not found: %s\n", cmd_no_option);
 	free_stab(env_paths);
 	return (NULL);
 }
