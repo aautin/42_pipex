@@ -29,7 +29,7 @@ static void	parent_process(int *fd, char **argv, char **env)
 	int		outfile_fd;
 
 	close(fd[1]);
-	outfile_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC);
+	outfile_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile_fd == -1)
 	{
 		perror(NULL);
@@ -82,13 +82,11 @@ int	main(int argc, char **argv,  char **env)
 		if (pid == 0)
 		{
 			child_process(argv, fd);
-			ft_printf("PID = %d || Parent PID = %d\n", getpid(), getppid());
 		}
 		else
 		{
 			waitpid(pid, NULL, 0);
 			parent_process(fd, argv, env);
-			ft_printf("PID = %d || Parent PID = %d\n", getpid(), getppid());
 		}
 		return (0);
 	}
