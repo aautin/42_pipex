@@ -6,12 +6,12 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 13:09:07 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/14 17:37:27 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/29 19:44:40 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include "../libft/includes/ft_printf.h"
 # include "../libft/includes/libft.h"
@@ -20,12 +20,14 @@
 # include <sys/wait.h>
 # include <errno.h>
 
-// utils_bonus.c
-char		**get_env_paths(char **env);
-char		*get_cmd_path(char *cmd_no_option, char **env);
-int			openfile(char *filename, char *option);
+// utils.c
+char	*find_path(char *cmd, char **envp);
+void	error(char *msg);
+void	execute(char *argv, char **envp);
 
-// main.c
-int			main(int argc, char **argv,  char **env);
+// pipex_bonus.c
+void	child_process(char **argv, char **envp, int *fd);
+void	parent_process(char **argv, char **envp, int *fd, int argc);
+
 
 #endif

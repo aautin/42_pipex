@@ -2,11 +2,11 @@ NAME		=	pipex
 
 LIB			=	libft.a
 
-SRC			=	src/main.c				\
-				src/parsing.c
+SRC			=	src/pipex.c			\
+				src/utils.c
 
-SRC_B		=	src/main_bonus.c		\
-				src/utils_bonus.c
+SRC_B		=	src/pipex_bonus.c	\
+				src/utils.c
 
 OBJ			=	$(SRC:.c=.o)
 
