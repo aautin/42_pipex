@@ -80,6 +80,11 @@ int	main(int argc, char **argv,  char **env)
 			exit(EXIT_FAILURE);
 		}
 		pid = fork();
+		if (pid == -1)
+		{
+			perror("Error:");
+			exit(EXIT_FAILURE);
+		}
 		if (pid == 0)
 			child_process(argv, fd, env);
 		else
@@ -89,9 +94,5 @@ int	main(int argc, char **argv,  char **env)
 		}
 		return (0);
 	}
-	else
-	{
-		ft_printf("Wrong number of arguments.\n");
-		return (1);
-	}
+	return (ft_printf("Wrong number of arguments.\n") != 0);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
+
 
 char	**get_env_paths(char **env)
 {
@@ -64,4 +65,22 @@ char	*get_cmd_path(char *cmd_no_option, char **env)
 	ft_printf("command not found: %s\n", cmd_no_option);
 	free_stab(env_paths);
 	return (NULL);
+}
+
+int		openfile(char *filename, char *option)
+{
+	int	fd;
+
+	if (ft_strncmp(option, "outdoc", 6) == 0)
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (ft_strncmp(option, "outfile", 7) == 0)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (ft_strncmp(option, "infile", 6) == 0)
+		fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		perror(NULL);
+		exit(EXIT_FAILURE);
+	}
+	return (fd);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -20,11 +20,12 @@
 # include <sys/wait.h>
 # include <errno.h>
 
-// parsing.c
-char	**get_env_paths(char **env);
-char	*get_cmd_path(char *cmd_no_option, char **env);
+// utils_bonus.c
+char		**get_env_paths(char **env);
+char		*get_cmd_path(char *cmd_no_option, char **env);
+int			openfile(char *filename, char *option);
 
 // main.c
-int		main(int argc, char **argv,  char **env);
+int			main(int argc, char **argv,  char **env);
 
 #endif

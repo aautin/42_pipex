@@ -5,8 +5,13 @@ static void	execute(char **cmd_w_options, char **env)
 {
 	char	*cmd_path;
 
+	if (cmd_w_options == NULL)
+	{
+		perror(NULL);
+		exit(EXIT_FAILURE);
+	}
 	cmd_path = get_cmd_path(cmd_w_options[0], env);
-	if (cmd_path == NULL)
+	i (cmd_path == NULL)
 		return ;
 	if (execve(cmd_path, cmd_w_options, NULL) == -1)
 	{
@@ -16,71 +21,65 @@ static void	execute(char **cmd_w_options, char **env)
 	free(cmd_path);
 }
 
-static void	parent_process(int *fd, char **argv, char **env)
+static void	process(char *argv, char **env)
 {
-	int		outfile_fd;
-	char	**cmd_w_options;
+	int	pid;
+	int	fd[2];
 
-	close(fd[1]);
-	outfile_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (outfile_fd == -1)
+	if (pipe(fd) == -1)
 	{
 		perror(NULL);
 		exit(EXIT_FAILURE);
 	}
-	dup2(fd[0], STDIN_FILENO);
-	dup2(outfile_fd, STDOUT_FILENO);
-	cmd_w_options = ft_split(argv[3], ' ');
-	execute(cmd_w_options, env);
-	free_stab(cmd_w_options);
-	close(outfile_fd);
-}
-
-static void	child_process(char **argv, int *fd, char **env)
-{
-	int		infile_fd;
-	char	**cmd_w_options;
-
-	close(fd[0]);
-	infile_fd = open(argv[1], O_RDONLY);
-	if (infile_fd == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-		perror(argv[1]);
+		perror(NULL);
 		exit(EXIT_FAILURE);
 	}
-	dup2(infile_fd, STDIN_FILENO);
-	dup2(fd[1], STDOUT_FILENO);
-	cmd_w_options = ft_split(argv[2], ' ');
-	execute(cmd_w_options, env);
-	free_stab(cmd_w_options);
-	close(infile_fd);
+	if (pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		execute(ft_split(argv, ' '), env);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+	}
+}
+
+static void	here_doc(char *limiter, int argc)
+{
+	// continue here...
 }
 
 int	main(int argc, char **argv,  char **env)
 {
-	int		fd[2];
-	int		pid;
+	int i;
+	int	fd_in_out[2];
 
-	if (argc == 5)
+	if (argc >= 5)
 	{
-		if (pipe(fd) == -1)
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
-			perror("Error:");
-			exit(EXIT_FAILURE);
+			i = 3;
+			fd_in_out[1] = openfile(argv[argc - 1], "outdoc");
+			here_doc(argv[2], argc);
 		}
-		pid = fork();
-		if (pid == 0)
-			child_process(argv, fd, env);
 		else
 		{
-			waitpid(pid, NULL, 0);
-			parent_process(fd, argv, env);
+			i = 2;
+			fd_in_out[1] = openfile(argv[argc - 1], "outfile");
+			fd_in_out[0] = openfile(argv[0], "infile");			
+			dup2(fd_in_out[0], STDIN_FILENO);
 		}
-		return (0);
+		while (i < argc - 2)
+			process(argv[i++], env);
+		dup2(fd_in_out[1], STDOUT_FILENO);
+		execute(ft_split(argv[argc - 2], ' '), env);
 	}
-	else
-	{
-		ft_printf("Wrong number of arguments.\n");
-		return (1);
-	}
+	return (ft_printf("Wrong number of arguments.\n") != 0);
 }

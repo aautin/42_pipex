@@ -6,7 +6,7 @@ SRC			=	src/main.c				\
 				src/parsing.c
 
 SRC_B		=	src/main_bonus.c		\
-				src/parsing.c
+				src/utils_bonus.c
 
 OBJ			=	$(SRC:.c=.o)
 
