@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 16:13:32 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/30 17:47:49 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 18:24:10 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,10 @@ void	execute(char *argv, char **envp)
 	cmd = ft_split(argv, ' ');
 	if (cmd == NULL)
 		error(NULL);
-	path = find_path(cmd, envp);
+	if (cmd[0][0] == '/')
+		path = ft_strdup(cmd[0]);
+	else
+		path = find_path(cmd, envp);
 	if (!path)
 	{
 		free_stab(cmd);
