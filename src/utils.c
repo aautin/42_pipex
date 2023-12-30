@@ -6,13 +6,13 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 16:13:32 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/29 19:03:14 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 17:47:49 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-char	*find_path(char *cmd, char **envp)
+char	*find_path(char **cmd, char **envp)
 {
 	char	**paths;
 	char	*right_path;
@@ -28,7 +28,7 @@ char	*find_path(char *cmd, char **envp)
 	while (paths[i])
 	{
 		paths[i] = ft_strjoin(paths[i], "/", 1);
-		paths[i] = ft_strjoin(paths[i], cmd, 1);
+		paths[i] = ft_strjoin(paths[i], cmd[0], 1);
 		if (access(paths[i], F_OK) == 0)
 		{
 			right_path = ft_strdup(paths[i]);
@@ -41,9 +41,9 @@ char	*find_path(char *cmd, char **envp)
 	return (NULL);
 }
 
-void	error(char *msg)
+void	error(char *err_msg)
 {
-	perror(msg);
+	perror(err_msg);
 	exit(EXIT_FAILURE);
 }
 
@@ -53,9 +53,9 @@ void	execute(char *argv, char **envp)
 	char	*path;
 
 	cmd = ft_split(argv, ' ');
-	if (!cmd)
+	if (cmd == NULL)
 		error(NULL);
-	path = find_path(cmd[0], envp);
+	path = find_path(cmd, envp);
 	if (!path)
 	{
 		free_stab(cmd);
@@ -63,4 +63,6 @@ void	execute(char *argv, char **envp)
 	}
 	if (execve(path, cmd, envp) == -1)
 		error(NULL);
+	free_stab(cmd);
+	free(path);
 }

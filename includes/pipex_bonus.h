@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 13:09:07 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/29 19:44:40 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 18:17:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,14 @@ char	*find_path(char *cmd, char **envp);
 void	error(char *msg);
 void	execute(char *argv, char **envp);
 
-// pipex_bonus.c
-void	child_process(char **argv, char **envp, int *fd);
-void	parent_process(char **argv, char **envp, int *fd, int argc);
+// utils_bonus.c
+void	print_and_exit(char *msg);
+void	read_until_limiter(char *limiter, int fd_out);
+void	here_doc(char *limiter, int argc);
 
+// pipex_bonus.c
+int		openfile(char *filename, char *filetype);
+void	child_process(char *argv, char **envp);
+void	parent_process(int outfile_fd);
 
 #endif

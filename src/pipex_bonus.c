@@ -6,62 +6,88 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 12:56:01 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/29 20:01:31 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 18:17:54 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-void	child_process(char **argv, char **envp, int *fd)
+int	openfile(char *filename, char *filetype)
 {
-	int		infile_fd;
+	int	fd;
 
-	infile_fd = open(argv[1], O_RDONLY, 0777);
-	if (infile_fd == -1)
-		error(NULL);
-	close(fd[0]);
-	dup2(fd[1], STDOUT_FILENO);
-	dup2(infile_fd, STDIN_FILENO);
-	execute(argv[2], envp);
+	if (ft_strncmp(filetype, "infile", 6) == 0)
+		fd = open(filename, O_RDONLY);
+	if (ft_strncmp(filetype, "outfile", 7) == 0)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (ft_strncmp(filetype, "outdoc", 6) == 0)
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd == -1)
+		error(filename);
+	return (fd);
 }
 
-void	parent_process(char **argv, char **envp, int *fd, int argc)
+void	child_process(char *argv, char **envp)
 {
-	int		outfile_fd;
-
-	outfile_fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (outfile_fd == -1)
-		error(NULL);
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	dup2(outfile_fd, STDOUT_FILENO);
-	execute(argv[argc - 2], envp);
-}
-
-int		main(int argc, char **argv, char **envp)
-{
-	int	fd[2];
 	int	pid;
+	int	fd[2];
 
-	if (argc >= 5)
+	if (pipe(fd) == -1)
+		error(NULL);
+	pid = fork();
+	if (pid == -1)
+		error(NULL);
+	if (pid == 0)
 	{
-		if (pipe(fd) == -1)
-			error(NULL);
-		pid = fork();
-		if (pid == -1)
-			error(NULL);
-		if (pid == 0)
-			child_process(argv, envp, fd);
-		else
-		{
-			waitpid(pid, NULL, 0);
-			parent_process(argv, envp, fd, argc);
-		}
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		execute(argv, envp);
 	}
 	else
 	{
-		ft_printf("Wrong number of arguments");
-		ft_printf("./pipex input_file cmd1 cmd2 output_file");
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
 	}
+}
+
+void	parent_process(int outfile_fd)
+{
+	char	*content;
+
+	content = get_file_content(STDIN_FILENO);
+	dup2(outfile_fd, STDOUT_FILENO);
+	if (content)
+	{
+		write(STDOUT_FILENO, content, ft_strlen(content));
+		free(content);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int	i;
+	int	outfile_fd;
+
+	if (argc >= 5)
+	{
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		{
+			i = 3;
+			outfile_fd = openfile(argv[argc - 1], "outdoc");
+			here_doc(argv[2], argc);
+		}
+		else
+		{
+			i = 2;
+			outfile_fd = openfile(argv[argc - 1], "outfile");
+			dup2(openfile(argv[1], "infile"), STDIN_FILENO);
+		}
+		while (i < argc - 1)
+			child_process(argv[i++], envp);
+		parent_process(outfile_fd);
+	}
+	else
+		ft_printf("Wrong number of arguments\n");
 	return (0);
 }

@@ -6,6 +6,7 @@ SRC			=	src/pipex.c			\
 				src/utils.c
 
 SRC_B		=	src/pipex_bonus.c	\
+				src/utils_bonus.c	\
 				src/utils.c
 
 OBJ			=	$(SRC:.c=.o)
