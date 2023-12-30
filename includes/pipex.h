@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 13:09:07 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/30 18:15:03 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 18:57:27 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 // utils.c
 char	*find_path(char **cmd, char **envp);
 void	error(char *err_msg);
+void	cmd_not_found(char **cmd);
 void	execute(char *argv, char **envp);
 
 // pipex.c

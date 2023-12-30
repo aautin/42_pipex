@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 16:13:32 by aautin            #+#    #+#             */
-/*   Updated: 2023/12/30 18:24:10 by aautin           ###   ########.fr       */
+/*   Updated: 2023/12/30 19:00:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,21 @@ char	*find_path(char **cmd, char **envp)
 		i++;
 	}
 	free_stab(paths);
-	return (NULL);
+	return ("notfound");
 }
 
 void	error(char *err_msg)
 {
 	perror(err_msg);
 	exit(EXIT_FAILURE);
+}
+
+void	cmd_not_found(char **cmd)
+{
+	write(2, "command not found: ", 19);
+	write(2, cmd[0], ft_strlen(cmd[0]));
+	write(2, "\n", 1);
+	free_stab(cmd);
 }
 
 void	execute(char *argv, char **envp)
@@ -63,6 +71,11 @@ void	execute(char *argv, char **envp)
 	{
 		free_stab(cmd);
 		error(NULL);
+	}
+	if (ft_strncmp(path, "notfound", 8) == 0)
+	{
+		cmd_not_found(cmd);
+		exit(EXIT_FAILURE);
 	}
 	if (execve(path, cmd, envp) == -1)
 		error(NULL);
