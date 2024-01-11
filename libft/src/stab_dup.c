@@ -1,43 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_file_content.c                                 :+:      :+:    :+:   */
+/*   stab_dup.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/10 13:26:06 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/05 18:54:23 by aautin           ###   ########.fr       */
+/*   Created: 2024/01/01 18:28:48 by aautin            #+#    #+#             */
+/*   Updated: 2024/01/01 19:20:34 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
-#include "../includes/get_next_line.h"
 
-char	*get_file_content(char *filename)
+char	**stab_dup(char **tab)
 {
-	int		fd;
-	char	*str;
-	char	*temp;
+	int		len;
+	char	**tab_copy;
 
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
+	if (tab == NULL)
 		return (NULL);
-	temp = get_next_line(fd);
-	str = NULL;
-	while (temp)
+	len = 0;
+	while (tab[len])
+		len++;
+	tab_copy = (char **)malloc((len + 1) * sizeof(char *));
+	if (tab_copy == NULL)
+		return (NULL);
+	len = 0;
+	while (tab[len])
 	{
-		if (str)
-			str = ft_strjoin(str, temp, 1);
-		else
-			str = ft_strdup(temp);
-		free(temp);
-		if (!str)
+		tab_copy[len] = ft_strdup(tab[len]);
+		if (tab_copy[len] == NULL)
 		{
-			close(fd);
+			free_stab(tab_copy);
 			return (NULL);
 		}
-		temp = get_next_line(fd);
+		len++;
 	}
-	close(fd);
-	return (str);
+	tab_copy[len] = NULL;
+	return (tab_copy);
 }
