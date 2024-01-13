@@ -17,7 +17,7 @@ CC			=	cc
 
 RM			=	rm -f
 
-CFLG		+=	-Wall -Werror -Wextra
+CFLG		+=	-Wall -Werror -Wextra -g3
 
 $(NAME)		:	$(OBJ)
 				make -C libft
@@ -30,7 +30,7 @@ bonus		:	$(OBJ_B)
 				$(CC) $(OBJ_B) -o $(NAME) $(LIB)
 
 %.o			:	%.c
-				$(CC) $(CFLG) -c $< -o $@ -g3
+				$(CC) $(CFLG) -c $< -o $@
 
 .PHONY		:	all re fclean clean libclean libfclean bonus
 

@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/12 19:32:05 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/13 20:59:47 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@
 # include <stdio.h>
 
 // utils.c
+void	close_and_exit(int infile, int exit_code);
+char	*get_cmd_path(char *cmd, char **envp);
 
 // pipex.c
-int			main(int argc, char *argv[], char **envp);
+void	child_process(int pipe[2], char *cmd, char **envp, int infile);
+void	parent_process(int pipe[2]);
+void	final_process(int pipe[2], char *outfile);
+int		main(int argc, char *argv[], char **envp);
 
 #endif
