@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/13 20:59:47 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/14 20:53:16 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@
 # include <stdio.h>
 
 // utils.c
+void	error(char *cmd);
 void	close_and_exit(int infile, int exit_code);
+char	*get_cmd_no_option(char *cmd);
 char	*get_cmd_path(char *cmd, char **envp);
 
 // pipex.c

@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/13 21:19:05 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/14 20:48:57 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,6 @@ void	child_process(int pipe[2], char *cmd, char **envp, int infile)
 		free_stab(cmd_and_options);
 		close_and_exit(infile, EXIT_FAILURE);
 	}
-	else
-	{
-		free(cmd_path);
-		free_stab(cmd_and_options);
-		close_and_exit(infile, EXIT_SUCCESS);
-	}
 }
 
 void	parent_process(int pipe[2])
@@ -53,6 +47,7 @@ void	parent_process(int pipe[2])
 void	final_process(int pipe[2], char *outfile)
 {
 	int		outfile_fd;
+	char	buf;
 
 	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile_fd == -1)
@@ -60,7 +55,9 @@ void	final_process(int pipe[2], char *outfile)
 		perror(outfile);
 		exit(EXIT_FAILURE);
 	}
-	dup2(outfile_fd, STDOUT_FILENO);
+	close(pipe[1]);
+	while (read(STDIN_FILENO, &buf, 1) > 0)
+		write(outfile_fd, &buf, 1);
 	close(outfile_fd);
 	close(pipe[0]);
 }
@@ -76,23 +73,28 @@ int	main(int argc, char *argv[], char **envp)
 		infile = open(argv[1], O_RDONLY);
 		if (infile == -1)
 			return (perror(argv[1]), 1);
+		dup2(infile, STDIN_FILENO);
 		if (pipe(pipe_fd) == -1)
 			return (perror("pipe"), 1);
-		dup2(infile, STDIN_FILENO);
-		argc = 1;
-		while (++argc < 4)
-		{
-			pid = fork();
-			if (pid == -1)
-				return (perror("fork"), 1);
-			if (pid == 0)
-				child_process(pipe_fd, argv[argc], envp, infile);
-			else
-				parent_process(pipe_fd);
-		}
+		pid = fork();
+		if (pid == -1)
+			return (perror("fork"), 1);
+		if (pid == 0)
+			child_process(pipe_fd, argv[2], envp, infile);
+		else
+			parent_process(pipe_fd);
+		if (pipe(pipe_fd) == -1)
+			return (perror("pipe"), 1);
+		pid = fork();
+		if (pid == -1)
+			return (perror("fork"), 1);
+		if (pid == 0)
+			child_process(pipe_fd, argv[3], envp, infile);
+		else
+			parent_process(pipe_fd);
 		close(infile);
-		while (waitpid(-1, NULL, 0) != -1)
-			;
+		if (pipe(pipe_fd) == -1)
+			return (perror("pipe"), 1);
 		final_process(pipe_fd, argv[4]);
 	}
 	else
