@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/14 20:48:57 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/14 21:03:16 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	child_process(int pipe[2], char *cmd, char **envp, int infile)
 	close(pipe[0]);
 	dup2(pipe[1], STDOUT_FILENO);
 	close(pipe[1]);
+	close(infile);
 	if (execve(cmd_path, cmd_and_options, NULL) == -1)
 	{
 		free(cmd_path);
