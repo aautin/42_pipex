@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/14 20:53:16 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/15 17:01:35 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@
 # include <string.h>
 # include <stdio.h>
 
+typedef struct s_fds
+{
+	int		pipe[2];
+	int		infl_fd;
+	int		outfl_fd;
+	char	*infile;
+	char	*outfile;
+}				t_fds;
+
 // utils.c
 void	error(char *cmd);
 void	close_and_exit(int infile, int exit_code);
@@ -28,9 +37,9 @@ char	*get_cmd_no_option(char *cmd);
 char	*get_cmd_path(char *cmd, char **envp);
 
 // pipex.c
-void	child_process(int pipe[2], char *cmd, char **envp, int infile);
+void	execute(char *cmd_path, char **cmd_and_options, t_fds *fds);
+void	child_process(t_fds *fds, char *cmd, char **envp, int cmd_nb);
 void	parent_process(int pipe[2]);
-void	final_process(int pipe[2], char *outfile);
 int		main(int argc, char *argv[], char **envp);
 
 #endif
