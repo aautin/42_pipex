@@ -1,53 +1,69 @@
-NAME		=	pipex
+NAME			:=	pipex
 
-LIB			=	libft.a
+LIBPATH			:=	-L libft -l ft
+LIB				:=	libft.a
 
-SRC			=	src/pipex.c			\
-				src/utils.c
+INCPATH			:=	-I includes
+FILES			:=	pipex.c			\
+					child_process.c	\
+					utils.c
 
-SRC_B		=	src/pipex_bonus.c	\
-				src/utils_bonus.c	\
-				src/utils.c
+SRCPATH			:=	src
+SRC				:=	$(addprefix $(SRCPATH)/,$(FILES))
 
-OBJ			=	$(SRC:.c=.o)
+OBJPATH			:=	obj
+OBJ				:=	$(addprefix $(OBJPATH)/,$(FILES:.c=.o))
 
-OBJ_B		=	$(SRC_B:.c=.o)
+DEFAULT			:=	"\033[0m"
+YELLOW			:=	"\033[0;33m"
+RED				:=	"\033[0;31m"
+GREEN			:=	"\033[0;32m"
 
-CC			=	cc
+CC				:=	cc
 
-RM			=	rm -f
+RM				:=	rm -f
 
-CFLG		+=	-Wall -Werror -Wextra -g3
+CFLG			:=	-Wall -Werror -Wextra -g3
 
-$(NAME)		:	$(OBJ)
-				make -C libft
-				cp libft/libft.a $(LIB)
-				$(CC) $(OBJ) -o $(NAME) $(LIB)
+all				:	$(NAME)
 
-bonus		:	$(OBJ_B)
-				make -C libft
-				cp libft/libft.a $(LIB)
-				$(CC) $(OBJ_B) -o $(NAME) $(LIB)
+$(OBJPATH)		:
+					@mkdir $@
 
-%.o			:	%.c
-				$(CC) $(CFLG) -c $< -o $@
+$(NAME)			:	$(OBJPATH) $(OBJ)
+					@make -s -C libft
+					@echo "Libft compilation..."
+					@$(CC) $(OBJ) -o $(NAME) $(LIBPATH)
+					@echo -n $(YELLOW)
+					@echo -n "$(NAME) created"
+					@echo $(GREEN)
+					@sleep 1
+					@echo "Project successfully compiled"
+					@echo -n $(DEFAULT)
 
-.PHONY		:	all re fclean clean libclean libfclean bonus
+$(OBJPATH)/%.o	:	$(SRCPATH)/%.c
+					@sleep 0.2
+					@$(CC) $(CFLG) -c $< -o $@ $(INCPATH)
+					@printf "%s\n" $<
 
-re			:	fclean all
+.PHONY			:	all re fclean clean
 
-all			:	$(NAME)
+re				:	fclean all
 
-clean		:
-				$(RM) $(OBJ)
-				$(RM) $(OBJ_B)
-				$(RM) $(LIB)
+clean			:
+					@echo -n $(RED)
+					@$(RM) $(OBJ)
+					@$(RM) $(OBJ_B)
+					@echo "Removed the object files..."
+					@make clean -s -C libft
+					@echo -n $(DEFAULT)
+					@sleep 0.2
 
-fclean		:	clean
-				$(RM) $(NAME)
-
-libclean	:
-				make clean -C libft
-
-libfclean	:
-				make fclean -C libft
+fclean			:	clean
+					@echo -n $(RED)
+					@$(RM) $(NAME)
+					@$(RM) $(LIB)
+					@echo "Removed $(NAME) and $(LIB)"
+					@make fclean -s -C libft
+					@echo -n $(DEFAULT)
+					@sleep 0.2

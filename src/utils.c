@@ -5,73 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/11 18:11:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/15 15:59:41 by aautin           ###   ########.fr       */
+/*   Created: 2024/01/16 14:50:06 by aautin            #+#    #+#             */
+/*   Updated: 2024/01/16 21:07:52 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "pipex.h"
 
-void	error(char *cmd)
+void	init_conf(t_conf *conf, int argc, char *argv[], char *envp[])
 {
-	write(2, "command not found: ", 19);
-	write(2, cmd, ft_strlen(cmd));
-	write(2, "\n", 1);
+	conf->argc = argc;
+	conf->argv = argv;
+	conf->envp = envp;
+	conf->fds.outfile = conf->argv[conf->argc - 1];
+	conf->fds.infile = conf->argv[1];
 }
 
-void	close_and_exit(int infile, int exit_code)
+char	*get_cmd_path(t_conf *conf, char *cmd)
 {
-	close(infile);
-	exit(exit_code);
-}
-
-char	*get_cmd_no_option(char *cmd)
-{
+	char	temp;
+	char	**paths;
+	char	*str_temp;
 	int		i;
 	int		j;
-	char	*cmd_no_option;
 
 	i = 0;
-	j = 0;
 	while (cmd[i] && cmd[i] != ' ')
 		i++;
-	cmd_no_option = malloc(sizeof(char) * (i + 1));
-	if (cmd_no_option == NULL)
-		return (NULL);
-	while (j < i)
+	temp = cmd[i];
+	cmd[i] = '\0';
+	if (access(cmd, F_OK | X_OK) != -1)
 	{
-		cmd_no_option[j] = cmd[j];
-		j++;
+		str_temp = ft_strdup(cmd);
+		cmd[i] = temp;
+		return (str_temp);
 	}
-	cmd_no_option[j] = '\0';
-	return (cmd_no_option);
-}
-
-char	*get_cmd_path(char *cmd, char **envp)
-{
-	char	**paths;
-	char	*cmd_no_option;
-	char	*cmd_path;
-	int		i;
-
-	i = -1;
-	while (ft_strncmp(envp[++i], "PATH=", 5) != 0)
-		if (envp[i] == NULL)
-			return (perror("PATH not found"), NULL);
-	paths = ft_split(envp[i] + 5, ':');
+	j = -1;
+	while (ft_strnstr(conf->envp[++j], "PATH=", 5) == NULL)
+	{
+		if (conf->envp[j] == NULL)
+		{
+			ft_putstr_fd("command not found: ", 2);
+			ft_putendl_fd(cmd, 2);
+			exit(EXIT_FAILURE);
+		}
+	}
+	paths = ft_split(conf->envp[j] + 5, ':');
 	if (paths == NULL)
-		return (NULL);
-	cmd_no_option = get_cmd_no_option(cmd);
-	if (cmd_no_option == NULL)
-		return (free_stab(paths), NULL);
-	i = -1;
-	while (paths[++i])
 	{
-		cmd_path = ft_strjoin(paths[i], "/", 0);
-		cmd_path = ft_strjoin(cmd_path, cmd_no_option, 1);
-		if (access(cmd_path, F_OK | X_OK) == 0)
-			return (free_stab(paths), free(cmd_no_option), cmd_path);
-		free(cmd_path);
+		perror("malloc");
+		exit(EXIT_FAILURE);
 	}
-	return (error(cmd_no_option), free_stab(paths), free(cmd_no_option), NULL);
+	j = -1;
+	while (paths[++j])
+	{
+		str_temp = ft_strjoin(paths[j], "/", 0);
+		str_temp = ft_strjoin(str_temp, cmd, 1);
+		if (access(str_temp, F_OK | X_OK) != -1)
+		{
+			cmd[i] = temp;
+			return (free_stab(paths), str_temp);
+		}
+		free(str_temp);
+	}
+	free_stab(paths);
+	ft_putstr_fd("command not found: ", 2);
+	ft_putendl_fd(cmd, 2);
+	exit(EXIT_FAILURE);
 }

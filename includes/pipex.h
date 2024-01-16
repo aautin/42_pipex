@@ -6,14 +6,16 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/15 17:01:35 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/16 21:09:29 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// define with ifndef and endif the .h
-
 #ifndef PIPEX_H
 # define PIPEX_H
+
+# define WR O_WRONLY
+# define CR O_CREAT
+# define TR O_TRUNC
 
 # include "../libft/includes/libft_extended.h"
 # include <errno.h>
@@ -28,18 +30,24 @@ typedef struct s_fds
 	int		outfl_fd;
 	char	*infile;
 	char	*outfile;
-}				t_fds;
+}	t_fds;
+
+typedef struct s_conf
+{
+	t_fds	fds;
+	int		argc;
+	char	**argv;
+	char	**envp;
+}	t_conf;
 
 // utils.c
-void	error(char *cmd);
-void	close_and_exit(int infile, int exit_code);
-char	*get_cmd_no_option(char *cmd);
-char	*get_cmd_path(char *cmd, char **envp);
+void	init_conf(t_conf *conf, int argc, char *argv[], char *envp[]);
+char	*get_cmd_path(t_conf *conf, char *cmd);
+
+// child_process.c
+void	child_process(t_conf *conf, int i);
 
 // pipex.c
-void	execute(char *cmd_path, char **cmd_and_options, t_fds *fds);
-void	child_process(t_fds *fds, char *cmd, char **envp, int cmd_nb);
-void	parent_process(int pipe[2]);
-int		main(int argc, char *argv[], char **envp);
+void	pipex(t_conf *conf);
 
 #endif

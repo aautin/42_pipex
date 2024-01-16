@@ -66,10 +66,10 @@ CC			=	cc
 CFLAGS		+=	-Wall -Werror -Wextra -g3
 
 $(NAME)		:	$(OBJ) $(OBJ_BONUS)
-				ar -rc -o $(NAME) $(OBJ)
+				@ar -rc -o $(NAME) $(OBJ)
 
 %.o			:	%.c
-				$(CC) $(CFLAGS) -c $< -o $@ 
+				@$(CC) $(CFLAGS) -c $< -o $@ 
 
 all			:	$(NAME)
 

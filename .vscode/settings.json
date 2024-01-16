@@ -2,6 +2,7 @@
 	"files.associations": {
 		"wait.h": "c",
 		"stdio.h": "c",
-		"libft_extended.h": "c"
+		"libft_extended.h": "c",
+		"pipex.h": "c"
 	}
 }
