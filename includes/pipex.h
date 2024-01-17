@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/16 21:09:29 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/17 22:33:45 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # define TR O_TRUNC
 
 # include "../libft/includes/libft_extended.h"
+# include <stdarg.h>
 # include <errno.h>
 # include <sys/wait.h>
 # include <string.h>
@@ -35,12 +36,21 @@ typedef struct s_fds
 typedef struct s_conf
 {
 	t_fds	fds;
+	int		i;
+	int		j;
+	char	temp;
+	char	*str;
+	char	here_doc;
+	char	*doc;
+	int		first_cmd;
+	int		last_cmd;
 	int		argc;
 	char	**argv;
 	char	**envp;
 }	t_conf;
 
 // utils.c
+void	close_fds(int fds_nb, ...);
 void	init_conf(t_conf *conf, int argc, char *argv[], char *envp[]);
 char	*get_cmd_path(t_conf *conf, char *cmd);
 

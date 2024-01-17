@@ -37,7 +37,7 @@ $(NAME)			:	$(OBJPATH) $(OBJ)
 					@echo -n $(YELLOW)
 					@echo -n "$(NAME) created"
 					@echo $(GREEN)
-					@sleep 1
+					@sleep 0.4
 					@echo "Project successfully compiled"
 					@echo -n $(DEFAULT)
 

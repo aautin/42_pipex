@@ -6,32 +6,42 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 14:50:03 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/16 21:12:44 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/17 16:27:49 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+static void	parent_process(t_conf *conf)
+{
+	close(conf->fds.pipe[1]);
+	dup2(conf->fds.pipe[0], STDIN_FILENO);
+	close(conf->fds.pipe[0]);
+}
+
 void	pipex(t_conf *conf)
 {
-	int	i;
+	int		i;
+	pid_t	pid;
 
-	i = 2;
-	while (i < conf->argc - 1)
+	i = conf->first_cmd;
+	while (i <= conf->last_cmd)
 	{
 		if (pipe(conf->fds.pipe) == -1)
 		{
 			perror("pipe");
 			exit(EXIT_FAILURE);
 		}
-		if (fork() == 0)
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid == 0)
 			child_process(conf, i);
 		else
-		{
-			close(conf->fds.pipe[1]);
-			dup2(conf->fds.pipe[0], STDIN_FILENO);
-			close(conf->fds.pipe[0]);
-		}
+			parent_process(conf);
 		i++;
 	}
 }
@@ -40,14 +50,18 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_conf	conf;
 
-	if (argc < 4)
-		ft_printf("Wrong number of arguments\n");
+	if (argc == 6 && ft_strnstr(argv[1], "here_doc", ft_strlen(argv[1])))
+		conf.here_doc = 1;
 	else
+		conf.here_doc = 0;
+	if (argc >= 5 || conf.here_doc)
 	{
 		init_conf(&conf, argc, argv, envp);
 		pipex(&conf);
 		while (waitpid(-1, NULL, 0) > 0)
 			;
 	}
+	else
+		ft_printf("Wrong number of arguments\n");
 	return (0);
 }
