@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 14:50:03 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/18 17:17:01 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/18 17:01:25 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,20 @@ void	pipex(t_conf *conf)
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_conf	conf;
+	char	is_args_nb_correct;
 
-	conf.is_here_doc = 0;
-	if (argc == 5)
+	if (argc > 1)
+	{
+		conf.is_here_doc = (ft_strnstr(argv[1], "here_doc",
+					ft_strlen(argv[1])) != 0);
+		if (conf.is_here_doc)
+			is_args_nb_correct = (argc == 6);
+		else
+			is_args_nb_correct = (argc >= 5);
+	}
+	else
+		is_args_nb_correct = 0;
+	if (is_args_nb_correct)
 	{
 		init_conf(&conf, argc, argv, envp);
 		pipex(&conf);

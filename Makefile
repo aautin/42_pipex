@@ -9,11 +9,18 @@ FILES			:=	pipex.c			\
 					child_process.c	\
 					utils.c
 
+B_FILES			:=	pipex_bonus.c			\
+					exit_failure.c			\
+					child_process_bonus.c	\
+					utils.c
+
 SRCPATH			:=	src
 SRC				:=	$(addprefix $(SRCPATH)/,$(FILES))
+B_SRC			:=	$(addprefix $(SRCPATH)/,$(B_FILES))
 
 OBJPATH			:=	obj
 OBJ				:=	$(addprefix $(OBJPATH)/,$(FILES:.c=.o))
+B_OBJ			:=	$(addprefix $(OBJPATH)/,$(B_FILES:.c=.o))
 
 DEFAULT			:=	"\033[0m"
 YELLOW			:=	"\033[0;33m"
@@ -38,27 +45,40 @@ $(NAME)			:	$(OBJPATH) $(OBJ)
 					@echo -n $(YELLOW)
 					@echo -n "$(NAME) created"
 					@echo $(GREEN)
-					@sleep 0.4
+					@sleep 0.3
 					@echo "Project successfully compiled"
 					@echo -n $(DEFAULT)
 
 $(OBJPATH)/%.o	:	$(SRCPATH)/%.c
-					@sleep 0.2
+					@sleep 0.1
 					@$(CC) $(CFLG) -c $< -o $@ $(INCPATH)
 					@printf "%s\n" $<
 
-.PHONY			:	all re fclean clean
+.PHONY			:	all re fclean clean bonus
 
 re				:	fclean all
+
+bonus			:	$(OBJPATH) $(B_OBJ)
+					@make -s -C libft
+					@echo "Libft compilation..."
+					@$(CC) $(B_OBJ) -o $(NAME) $(LIBPATH)
+					@echo -n $(YELLOW)
+					@echo -n "$(NAME) created"
+					@echo $(GREEN)
+					@sleep 0.3
+					@echo "Project successfully compiled"
+					@echo -n $(DEFAULT)
 
 clean			:
 					@echo -n $(RED)
 					@$(RM) $(OBJ)
-					@$(RM) $(OBJ_B)
 					@echo "Removed the object files..."
+					@sleep 0.2
+					@$(RM) $(B_OBJ)
+					@echo "Removed the bonus_object files..."
+					@sleep 0.2
 					@make clean -s -C libft
 					@echo -n $(DEFAULT)
-					@sleep 0.2
 
 fclean			:	clean
 					@echo -n $(RED)
