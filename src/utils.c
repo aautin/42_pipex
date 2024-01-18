@@ -6,17 +6,24 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 14:50:06 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/17 22:36:56 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/18 16:32:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	command_not_found(char *cmd)
+static void	cut_cmd(t_conf *conf, char *cmd)
 {
-	ft_putstr_fd("command not found: ", 2);
-	ft_putendl_fd(cmd, 2);
-	exit(EXIT_FAILURE);
+	conf->cut_i = 0;
+	while (cmd[conf->cut_i] && cmd[conf->cut_i] != ' ')
+		conf->cut_i++;
+	conf->previous_letter = cmd[conf->cut_i];
+	cmd[conf->cut_i] = '\0';
+}
+
+static void	glue_cmd(t_conf *conf, char *cmd)
+{
+	cmd[conf->cut_i] = conf->previous_letter;
 }
 
 void	close_fds(int fds_nb, ...)
@@ -37,7 +44,7 @@ void	close_fds(int fds_nb, ...)
 
 void	init_conf(t_conf *conf, int argc, char *argv[], char *envp[])
 {
-	if (conf->here_doc == 1)
+	if (conf->is_here_doc == 1)
 	{
 		conf->first_cmd = 3;
 		conf->last_cmd = 4;
@@ -54,45 +61,30 @@ void	init_conf(t_conf *conf, int argc, char *argv[], char *envp[])
 	conf->fds.infile = conf->argv[1];
 }
 
-char	*init_path(t_conf *conf, char *cmd)
-{
-	char	*str_temp;
-
-	conf->i = 0;
-	while (cmd[conf->i] && cmd[conf->i] != ' ')
-		conf->i++;
-	conf->temp = cmd[conf->i];
-	cmd[conf->i] = '\0';
-	if (access(cmd, F_OK | X_OK) != -1)
-		return (str_temp = ft_strdup(cmd), cmd[conf->i] = conf->temp, str_temp);
-	return (NULL);
-}
-
 char	*get_cmd_path(t_conf *conf, char *cmd)
 {
 	char	**paths;
+	char	*cmd_w_path;
+	int		i;
 
-	conf->str = init_path(conf, cmd);
-	if (conf->str != NULL)
-		return (conf->str);
-	conf->j = -1;
-	while (conf->envp[++conf->j] && ft_strncmp(conf->envp[conf->j], "PATH=", 5))
+	cut_cmd(conf, cmd);
+	if (access(cmd, F_OK | X_OK) != -1)
+		return (cmd_w_path = ft_strdup(cmd), glue_cmd(conf, cmd), cmd_w_path);
+	i = -1;
+	while (conf->envp[++i] && ft_strncmp(conf->envp[i], "PATH=", 5))
 		;
-	if (conf->envp[conf->j] == NULL)
+	if (conf->envp[i] == NULL)
 		command_not_found(cmd);
-	paths = ft_split(conf->envp[conf->j] + 5, ':');
+	paths = ft_split(conf->envp[i] + 5, ':');
 	if (paths == NULL)
+		perror_exit("malloc");
+	i = -1;
+	while (paths[++i])
 	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	conf->j = -1;
-	while (paths[++conf->j])
-	{
-		conf->str = ft_strjoin(ft_strjoin(paths[conf->j], "/", 0), cmd, 1);
-		if (access(conf->str, F_OK | X_OK) != -1)
-			return (cmd[conf->i] = conf->temp, free_stab(paths), conf->str);
-		free(conf->str);
+		cmd_w_path = ft_strjoin(ft_strjoin(paths[i], "/", 0), cmd, 1);
+		if (access(cmd_w_path, F_OK | X_OK) != -1)
+			return (glue_cmd(conf, cmd), free_stab(paths), cmd_w_path);
+		free(cmd_w_path);
 	}
 	return (free_stab(paths), command_not_found(cmd), NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 18:04:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/01/17 22:33:45 by aautin           ###   ########.fr       */
+/*   Updated: 2024/01/18 16:31:29 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,19 @@ typedef struct s_fds
 typedef struct s_conf
 {
 	t_fds	fds;
-	int		i;
-	int		j;
-	char	temp;
-	char	*str;
-	char	here_doc;
-	char	*doc;
+	int		cut_i;
+	char	previous_letter;
+	char	is_here_doc;
 	int		first_cmd;
 	int		last_cmd;
 	int		argc;
 	char	**argv;
 	char	**envp;
 }	t_conf;
+
+// exit_failure.c
+void	command_not_found(char *cmd);
+void	perror_exit(char *msg);
 
 // utils.c
 void	close_fds(int fds_nb, ...);

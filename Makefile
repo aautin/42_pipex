@@ -5,6 +5,7 @@ LIB				:=	libft.a
 
 INCPATH			:=	-I includes
 FILES			:=	pipex.c			\
+					exit_failure.c	\
 					child_process.c	\
 					utils.c
 
